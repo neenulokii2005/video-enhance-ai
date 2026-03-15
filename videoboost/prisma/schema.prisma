@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(uuid())
+  username          String
+  email             String    @unique
+  passwordHash      String?
+  googleId          String?
+  planType          PlanType  @default(FREE)
+  credits           Int       @default(15) // Seconds of processing left for free tier
+  videosProcessed   Int       @default(0)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  videos            Video[]
+  transactions      Transaction[]
+}
+
+enum PlanType {
+  FREE
+  PRO_MONTHLY
+  PRO_YEARLY
+}
+
+model Video {
+  id              String      @id @default(uuid())
+  userId          String
+  name            String
+  originalUrl     String
+  processedUrl    String?
+  targetResolution Resolution
+  durationSec     Int
+  status          VideoStatus @default(PENDING)
+  createdAt       DateTime    @default(now())
+
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum Resolution {
+  P1080
+  K2
+  K4
+}
+
+enum VideoStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Transaction {
+  id              String    @id @default(uuid())
+  userId          String
+  amount          Float
+  currency        String    @default("USD")
+  planType        PlanType
+  status          TxStatus  @default(COMPLETED)
+  createdAt       DateTime  @default(now())
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum TxStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}

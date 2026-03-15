@@ -1,0 +1,217 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fff, var(--text-muted));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  color: var(--text-muted);
+}
+
+.uploadSection {
+  background: var(--surface-100);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 4rem 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.uploadSection:hover {
+  border-color: var(--primary);
+  background: rgba(124, 58, 237, 0.05);
+}
+
+.uploadIcon {
+  width: 64px;
+  height: 64px;
+  color: var(--primary);
+  margin: 0 auto 1.5rem auto;
+  opacity: 0.8;
+}
+
+.uploadTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.uploadDesc {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.buttonPrimary {
+  background: var(--primary);
+  color: #fff;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  border: none;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-glow);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.buttonPrimary:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.formats {
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.formatItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Settings Card */
+.settingsCard {
+  background: var(--surface-100);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.settingsTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.settingsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.resolutionOption {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--surface-200);
+}
+
+.resolutionOption:hover {
+  border-color: var(--primary);
+}
+
+.resolutionActive {
+  border-color: var(--primary);
+  background: rgba(124, 58, 237, 0.1);
+  box-shadow: 0 0 0 1px var(--primary);
+}
+
+.resTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+}
+
+.resDesc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Progress Section */
+.processingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(5, 5, 8, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.processingCard {
+  background: var(--surface-100);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 3rem;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.processingIcon {
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.progressBarBg {
+  width: 100%;
+  height: 12px;
+  background: var(--surface-300);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin: 2rem 0 1rem 0;
+}
+
+.progressBarFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  border-radius: var(--radius-full);
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.progressBarFill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: translateX(-100%);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
