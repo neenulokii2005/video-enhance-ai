@@ -3,124 +3,244 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Check, Play } from "lucide-react";
-import styles from "./page.module.css";
 
 export default function PricingPage() {
-  const [isYearly, setIsYearly] = useState(true);
+  const [isYearly, setIsYearly] = useState(false);
 
   return (
-    <div className={styles.container}>
-      <div className={styles.glowBackground}></div>
+    <div style={{
+      minHeight: "100vh",
+      background: "#0a0a0f",
+      color: "white",
+      fontFamily: "sans-serif",
+      padding: "2rem 1rem"
+    }}>
 
-      {/* Basic Navbar for Pricing */}
-      <nav style={{ position: "absolute", top: 0, left: 0, right: 0, padding: "1.5rem 2rem", display: "flex", justifyContent: "space-between", zIndex: 20 }}>
-        <Link href="/" style={{ display: "flex", alignItems: "center", gap: "0.5rem", color: "#fff", textDecoration: "none", fontWeight: 700, fontSize: "1.25rem" }}>
-          <Play size={20} color="#7c3aed" />
+      {/* Navbar */}
+      <nav style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        maxWidth: "1100px",
+        margin: "0 auto 3rem auto"
+      }}>
+        <Link href="/" style={{
+          display: "flex", alignItems: "center", gap: "0.5rem",
+          color: "white", textDecoration: "none", fontWeight: 700, fontSize: "1.2rem"
+        }}>
+          <Play size={22} color="#7c3aed" />
           VideoBoost AI
         </Link>
-        <Link href="/dashboard" style={{ color: "#fff", textDecoration: "none", fontWeight: 600 }}>
-          Dashboard
+        <Link href="/dashboard" style={{
+          padding: "0.5rem 1.5rem",
+          background: "#7c3aed",
+          color: "white",
+          borderRadius: "8px",
+          textDecoration: "none",
+          fontWeight: 600
+        }}>
+          Go to Dashboard
         </Link>
       </nav>
 
-      <div className={styles.header}>
-        <h1 className={styles.title}>Simple, Transparent Pricing</h1>
-        <p className={styles.subtitle}>
-          Choose the plan that fits your creative needs. Upgrade, downgrade, or cancel anytime.
+      {/* Header */}
+      <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+        <h1 style={{ fontSize: "2.5rem", fontWeight: 800, marginBottom: "1rem" }}>
+          Simple, Transparent Pricing
+        </h1>
+        <p style={{ color: "#aaa", fontSize: "1.1rem" }}>
+          Start free. Upgrade when you need more power.
         </p>
       </div>
 
-      <div className={styles.toggleContainer}>
-        <span 
-          className={`${styles.toggleLabel} ${!isYearly ? styles.toggleLabelActive : ""}`} 
-          onClick={() => setIsYearly(false)}
+      {/* Toggle */}
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "1rem",
+        marginBottom: "3rem"
+      }}>
+        <span style={{
+          color: !isYearly ? "white" : "#666",
+          fontWeight: !isYearly ? 700 : 400
+        }}>Monthly</span>
+
+        <div
+          onClick={() => setIsYearly(!isYearly)}
+          style={{
+            width: "52px", height: "28px",
+            background: isYearly ? "#7c3aed" : "#333",
+            borderRadius: "20px",
+            cursor: "pointer",
+            position: "relative",
+            transition: "background 0.3s"
+          }}
         >
-          Monthly
-        </span>
-        <label className={styles.switch}>
-          <input 
-            type="checkbox" 
-            checked={isYearly} 
-            onChange={(e) => setIsYearly(e.target.checked)} 
-          />
-          <span className={styles.slider}></span>
-        </label>
-        <span 
-          className={`${styles.toggleLabel} ${isYearly ? styles.toggleLabelActive : ""}`} 
-          onClick={() => setIsYearly(true)}
-          style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-        >
-          Yearly <span style={{ background: "rgba(16, 185, 129, 0.1)", color: "#10b981", fontSize: "0.7rem", padding: "0.1rem 0.4rem", borderRadius: "10px" }}>Save 20%</span>
+          <div style={{
+            position: "absolute",
+            top: "3px",
+            left: isYearly ? "27px" : "3px",
+            width: "22px", height: "22px",
+            background: "white",
+            borderRadius: "50%",
+            transition: "left 0.3s"
+          }} />
+        </div>
+
+        <span style={{
+          color: isYearly ? "white" : "#666",
+          fontWeight: isYearly ? 700 : 400
+        }}>
+          Yearly
+          <span style={{
+            marginLeft: "0.5rem",
+            background: "#16a34a",
+            color: "white",
+            padding: "0.1rem 0.5rem",
+            borderRadius: "10px",
+            fontSize: "0.75rem"
+          }}>Save 20%</span>
         </span>
       </div>
 
-      <div className={styles.grid}>
-        
+      {/* Plans */}
+      <div style={{
+        display: "flex",
+        gap: "1.5rem",
+        maxWidth: "800px",
+        margin: "0 auto",
+        flexWrap: "wrap",
+        justifyContent: "center"
+      }}>
+
         {/* Free Plan */}
-        <div className={styles.card}>
-          <h2 className={styles.cardName}>Free Plan</h2>
-          <div className={styles.cardPrice}>$0</div>
-          <p className={styles.cardDesc}>
-            Perfect to experience the AI upscaling technology before committing.
-          </p>
-          <ul className={styles.featureList}>
-            <li className={styles.featureItem}>
-              <Check size={20} className={styles.featureIcon} />
-              <span>Up to 15 seconds per video</span>
-            </li>
-            <li className={styles.featureItem}>
-              <Check size={20} className={styles.featureIcon} />
-              <span>1080p maximum export resolution</span>
-            </li>
-            <li className={styles.featureItem}>
-              <Check size={20} className={styles.featureIcon} />
-              <span>Standard processing speed</span>
-            </li>
-            <li className={styles.featureItem} style={{ color: "var(--text-muted)" }}>
-              <Check size={20} className={styles.featureIcon} style={{ color: "var(--text-muted)" }} />
-              <span>Ads shown before download</span>
-            </li>
-          </ul>
-          <Link href="/register" className={styles.buttonOutline}>
+        <div style={{
+          background: "#12121e",
+          border: "1px solid #2a2a3e",
+          borderRadius: "16px",
+          padding: "2rem",
+          width: "340px",
+          flex: "1 1 300px"
+        }}>
+          <div style={{ marginBottom: "0.5rem" }}>
+            <p style={{ color: "#aaa", marginBottom: "0.5rem" }}>Free Plan</p>
+            <h2 style={{ fontSize: "2.8rem", fontWeight: 800 }}>₹0</h2>
+            <p style={{ color: "#666", fontSize: "0.9rem", marginBottom: "1rem" }}>
+              Perfect to experience AI upscaling before committing.
+            </p>
+          </div>
+
+          <Link href="/register" style={{
+            display: "block",
+            textAlign: "center",
+            padding: "0.75rem",
+            background: "transparent",
+            border: "1px solid #7c3aed",
+            color: "#7c3aed",
+            borderRadius: "8px",
+            textDecoration: "none",
+            fontWeight: 600,
+            marginBottom: "1.5rem"
+          }}>
             Get Started Free
           </Link>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            {[
+              "Up to 15 seconds per video",
+              "1080p maximum export",
+              "Standard processing speed",
+              "Ads shown before download"
+            ].map((feature) => (
+              <div key={feature} style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                <Check size={16} color="#7c3aed" />
+                <span style={{ color: "#ccc", fontSize: "0.9rem" }}>{feature}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Pro Plan */}
-        <div className={`${styles.card} ${styles.cardPro}`}>
-          <div className={styles.badge}>Most Popular</div>
-          <h2 className={styles.cardName}>Pro Plan</h2>
-          <div className={styles.cardPrice}>
-            ${isYearly ? "19.99" : "24.99"}
-            <span className={styles.pricePeriod}>/mo</span>
+        <div style={{
+          background: "#12121e",
+          border: "2px solid #7c3aed",
+          borderRadius: "16px",
+          padding: "2rem",
+          width: "340px",
+          flex: "1 1 300px",
+          position: "relative"
+        }}>
+          <div style={{
+            position: "absolute",
+            top: "-12px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "#7c3aed",
+            color: "white",
+            padding: "0.25rem 1rem",
+            borderRadius: "20px",
+            fontSize: "0.8rem",
+            fontWeight: 600,
+            whiteSpace: "nowrap"
+          }}>
+            Most Popular
           </div>
-          <p className={styles.cardDesc}>
-            For serious creators and professionals who need the absolute best quality without limits.
-          </p>
-          <ul className={styles.featureList}>
-            <li className={styles.featureItem}>
-              <Check size={20} className={styles.featureIconPro} />
-              <span>Up to {isYearly ? "5 minutes" : "2 minutes"} per video</span>
-            </li>
-            <li className={styles.featureItem}>
-              <Check size={20} className={styles.featureIconPro} />
-              <span>{isYearly ? "1080p, 2K, and 4K Ultra HD exports" : "1080p and 2K exports"}</span>
-            </li>
-            <li className={styles.featureItem}>
-              <Check size={20} className={styles.featureIconPro} />
-              <span>No advertisements</span>
-            </li>
-            <li className={styles.featureItem}>
-              <Check size={20} className={styles.featureIconPro} />
-              <span>{isYearly ? "Priority GPU queue (Fastest)" : "Faster processing queue"}</span>
-            </li>
-          </ul>
-          <Link href="/dashboard/billing/checkout" className={styles.buttonPrimary}>
+
+          <div style={{ marginBottom: "0.5rem" }}>
+            <p style={{ color: "#aaa", marginBottom: "0.5rem" }}>Pro Plan</p>
+            <h2 style={{ fontSize: "2.8rem", fontWeight: 800 }}>
+              {isYearly ? "₹799" : "₹99"}
+              <span style={{ fontSize: "1rem", color: "#aaa", fontWeight: 400 }}>
+                {isYearly ? "/yr" : "/mo"}
+              </span>
+            </h2>
+            <p style={{ color: "#666", fontSize: "0.9rem", marginBottom: "1rem" }}>
+              For serious creators who need the best quality without limits.
+            </p>
+          </div>
+
+          <Link href="/register" style={{
+            display: "block",
+            textAlign: "center",
+            padding: "0.75rem",
+            background: "#7c3aed",
+            color: "white",
+            borderRadius: "8px",
+            textDecoration: "none",
+            fontWeight: 600,
+            marginBottom: "1.5rem"
+          }}>
             Upgrade to Pro
           </Link>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            {[
+              "Up to 5 minutes per video",
+              "1080p, 2K, and 4K Ultra HD",
+              "No advertisements",
+              "Priority GPU processing",
+              "Unlimited videos",
+              "Priority support"
+            ].map((feature) => (
+              <div key={feature} style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                <Check size={16} color="#7c3aed" />
+                <span style={{ color: "#ccc", fontSize: "0.9rem" }}>{feature}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
       </div>
+
+      {/* Bottom note */}
+      <div style={{ maxWidth: "600px", margin: "4rem auto 0 auto", textAlign: "center" }}>
+        <p style={{ color: "#aaa" }}>
+          Start with the free plan — no credit card required.
+          Upgrade anytime when you need more.
+        </p>
+      </div>
+
     </div>
   );
 }
