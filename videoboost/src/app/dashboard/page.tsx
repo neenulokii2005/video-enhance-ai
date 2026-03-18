@@ -13,6 +13,9 @@ export default function DashboardPage() {
   const [videoURL, setVideoURL] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [showAdModal, setShowAdModal] = useState(false);
+  const [adTimer, setAdTimer] = useState(5);
+  const [adDone, setAdDone] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -69,7 +72,6 @@ export default function DashboardPage() {
           clearInterval(interval);
           setTimeout(() => {
             setIsProcessing(false);
-            alert("Processing complete! Redirecting to download...");
           }, 500);
           return 100;
         }
@@ -78,8 +80,31 @@ export default function DashboardPage() {
     }, 400);
   };
 
+  const handleDownload = () => {
+    setShowAdModal(true);
+    setAdTimer(5);
+    setAdDone(false);
+
+    const countdown = setInterval(() => {
+      setAdTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdown);
+          setAdDone(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const handleAdDownload = () => {
+    setShowAdModal(false);
+    alert("Download started! ✅");
+  };
+
   return (
     <div className={styles.container}>
+
       {/* Header + Logout */}
       <div className={styles.header} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
@@ -138,6 +163,7 @@ export default function DashboardPage() {
         )}
       </div>
 
+      {/* Video Preview */}
       {videoURL && (
         <div style={{ marginTop: "20px", textAlign: "center" }}>
           <h3>Preview 🎬</h3>
@@ -200,6 +226,19 @@ export default function DashboardPage() {
         </button>
       </div>
 
+      {/* Download Button - shows after processing complete */}
+      {!isProcessing && file && progress === 100 && (
+        <div style={{ textAlign: "right", marginTop: "1rem" }}>
+          <button
+            className={styles.buttonPrimary}
+            style={{ padding: "1rem 3rem", fontSize: "1.1rem", background: "#16a34a" }}
+            onClick={handleDownload}
+          >
+            Download Enhanced Video 🎬
+          </button>
+        </div>
+      )}
+
       {/* Processing Overlay */}
       {isProcessing && (
         <div className={styles.processingOverlay}>
@@ -218,6 +257,97 @@ export default function DashboardPage() {
             <p className={styles.subtitle} style={{ fontSize: "0.8rem", marginTop: "1rem" }}>
               Please do not close this window.
             </p>
+          </div>
+        </div>
+      )}
+
+      {/* Ad Modal */}
+      {showAdModal && (
+        <div style={{
+          position: "fixed", top: 0, left: 0,
+          width: "100%", height: "100%",
+          background: "rgba(0,0,0,0.8)",
+          display: "flex", alignItems: "center",
+          justifyContent: "center", zIndex: 1000
+        }}>
+          <div style={{
+            background: "#1a1a2e",
+            padding: "2rem",
+            borderRadius: "16px",
+            textAlign: "center",
+            maxWidth: "400px",
+            width: "90%",
+            border: "1px solid #7c3aed"
+          }}>
+            <h2 style={{ color: "white", marginBottom: "1rem" }}>
+              📢 Watch Ad to Download
+            </h2>
+
+            {!adDone ? (
+              <>
+                <div style={{
+                  width: "80px", height: "80px",
+                  borderRadius: "50%",
+                  background: "#7c3aed",
+                  display: "flex", alignItems: "center",
+                  justifyContent: "center",
+                  margin: "1rem auto",
+                  fontSize: "2rem", fontWeight: "bold", color: "white"
+                }}>
+                  {adTimer}
+                </div>
+                <p style={{ color: "#aaa" }}>Please wait {adTimer} seconds...</p>
+                <div style={{
+                  width: "100%", height: "8px",
+                  background: "#333", borderRadius: "4px",
+                  marginTop: "1rem"
+                }}>
+                  <div style={{
+                    width: `${((5 - adTimer) / 5) * 100}%`,
+                    height: "100%",
+                    background: "#7c3aed",
+                    borderRadius: "4px",
+                    transition: "width 1s"
+                  }}></div>
+                </div>
+              </>
+            ) : (
+              <>
+                <p style={{ color: "#4ade80", fontSize: "1.2rem", margin: "1rem 0" }}>
+                  ✅ Ad complete!
+                </p>
+                <button
+                  onClick={handleAdDownload}
+                  style={{
+                    padding: "0.75rem 2rem",
+                    background: "#7c3aed",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontSize: "1rem",
+                    fontWeight: 600
+                  }}
+                >
+                  Download Now 🎬
+                </button>
+              </>
+            )}
+
+            <button
+              onClick={() => setShowAdModal(false)}
+              style={{
+                marginTop: "1rem",
+                background: "transparent",
+                border: "none",
+                color: "#666",
+                cursor: "pointer",
+                display: "block",
+                margin: "1rem auto 0"
+              }}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       )}
