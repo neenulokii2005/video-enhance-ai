@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 import { useState, useRef } from "react";
 import { UploadCloud, Film, PlayCircle, HardDrive, Wand2, Sparkles, MonitorUp } from "lucide-react";
 import styles from "./page.module.css";
@@ -11,31 +14,45 @@ export default function DashboardPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) {
+        router.push("/login");
+      }
+    };
+    checkUser();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files && e.target.files[0]) {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-
-    const url = URL.createObjectURL(selectedFile);
-    setVideoURL(url);
-  }
-};
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0];
+      setFile(selectedFile);
+      const url = URL.createObjectURL(selectedFile);
+      setVideoURL(url);
+    }
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
   };
 
   const handleDrop = (e: React.DragEvent) => {
-  e.preventDefault();
-  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-    const selectedFile = e.dataTransfer.files[0];
-    setFile(selectedFile);
-
-    const url = URL.createObjectURL(selectedFile);
-    setVideoURL(url);
-  }
-};
+    e.preventDefault();
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const selectedFile = e.dataTransfer.files[0];
+      setFile(selectedFile);
+      const url = URL.createObjectURL(selectedFile);
+      setVideoURL(url);
+    }
+  };
 
   const browseFiles = () => {
     fileInputRef.current?.click();
@@ -46,7 +63,6 @@ export default function DashboardPage() {
     setIsProcessing(true);
     setProgress(0);
 
-    // Mock processing simulation
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -57,7 +73,6 @@ export default function DashboardPage() {
           }, 500);
           return 100;
         }
-        // Random increment between 2 and 8
         return prev + Math.floor(Math.random() * 7) + 2;
       });
     }, 400);
@@ -65,11 +80,27 @@ export default function DashboardPage() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <h2>Welcome to VideoBoost 🚀</h2> 
-
-        <h1 className={styles.title}>Enhance Video</h1>
-        <p className={styles.subtitle}>Upload your low-resolution video and let our AI transform it.</p>
+      {/* Header + Logout */}
+      <div className={styles.header} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div>
+          <h2>Welcome to VideoBoost 🚀</h2>
+          <h1 className={styles.title}>Enhance Video</h1>
+          <p className={styles.subtitle}>Upload your low-resolution video and let our AI transform it.</p>
+        </div>
+        <button
+          onClick={handleLogout}
+          style={{
+            padding: "0.5rem 1.5rem",
+            background: "transparent",
+            border: "1px solid #7c3aed",
+            color: "#7c3aed",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontWeight: 600
+          }}
+        >
+          Logout
+        </button>
       </div>
 
       <input
@@ -106,54 +137,51 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
       {videoURL && (
-       <div style={{ marginTop: "20px", textAlign: "center" }}>
-       <h3>Preview 🎬</h3>
-       <video
-      src={videoURL}
-      controls
-      style={{
-        width: "100%",
-        maxWidth: "500px",
-        borderRadius: "10px"
-      }}
-    />
-  </div>
-)}
+        <div style={{ marginTop: "20px", textAlign: "center" }}>
+          <h3>Preview 🎬</h3>
+          <video
+            src={videoURL}
+            controls
+            style={{ width: "100%", maxWidth: "500px", borderRadius: "10px" }}
+          />
+        </div>
+      )}
 
       {/* Target Resolution Settings */}
       <div className={styles.settingsCard}>
         <h3 className={styles.settingsTitle}>Output Resolution</h3>
         <div className={styles.settingsGrid}>
-          
-          <div 
-            className={`${styles.resolutionOption} ${resolution === "1080p" ? styles.resolutionActive : ""}`} 
+
+          <div
+            className={`${styles.resolutionOption} ${resolution === "1080p" ? styles.resolutionActive : ""}`}
             onClick={() => setResolution("1080p")}
           >
-            <MonitorUp size={24} color={resolution === "1080p" ? "var(--primary)" : "var(--text-muted)"} style={{margin:"0 auto 0.5rem auto"}}/>
+            <MonitorUp size={24} color={resolution === "1080p" ? "var(--primary)" : "var(--text-muted)"} style={{ margin: "0 auto 0.5rem auto" }} />
             <div className={styles.resTitle}>1080p</div>
             <div className={styles.resDesc}>Standard HD</div>
-            <div className={styles.resDesc} style={{color: "var(--primary)", marginTop: "0.5rem", fontSize: "0.75rem"}}>Free Tier</div>
+            <div className={styles.resDesc} style={{ color: "var(--primary)", marginTop: "0.5rem", fontSize: "0.75rem" }}>Free Tier</div>
           </div>
 
-          <div 
-            className={`${styles.resolutionOption} ${resolution === "2K" ? styles.resolutionActive : ""}`} 
+          <div
+            className={`${styles.resolutionOption} ${resolution === "2K" ? styles.resolutionActive : ""}`}
             onClick={() => setResolution("2K")}
           >
-            <Wand2 size={24} color={resolution === "2K" ? "var(--primary)" : "var(--text-muted)"} style={{margin:"0 auto 0.5rem auto"}}/>
+            <Wand2 size={24} color={resolution === "2K" ? "var(--primary)" : "var(--text-muted)"} style={{ margin: "0 auto 0.5rem auto" }} />
             <div className={styles.resTitle}>2K</div>
             <div className={styles.resDesc}>QHD Print Quality</div>
-            <div className={styles.resDesc} style={{color: "var(--text-muted)", marginTop: "0.5rem", fontSize: "0.75rem"}}>Pro Required</div>
+            <div className={styles.resDesc} style={{ color: "var(--text-muted)", marginTop: "0.5rem", fontSize: "0.75rem" }}>Pro Required</div>
           </div>
 
-          <div 
-            className={`${styles.resolutionOption} ${resolution === "4K" ? styles.resolutionActive : ""}`} 
+          <div
+            className={`${styles.resolutionOption} ${resolution === "4K" ? styles.resolutionActive : ""}`}
             onClick={() => setResolution("4K")}
           >
-            <Sparkles size={24} color={resolution === "4K" ? "var(--primary)" : "var(--text-muted)"} style={{margin:"0 auto 0.5rem auto"}}/>
+            <Sparkles size={24} color={resolution === "4K" ? "var(--primary)" : "var(--text-muted)"} style={{ margin: "0 auto 0.5rem auto" }} />
             <div className={styles.resTitle}>4K</div>
             <div className={styles.resDesc}>Ultra HD</div>
-            <div className={styles.resDesc} style={{color: "var(--text-muted)", marginTop: "0.5rem", fontSize: "0.75rem"}}>Pro Required</div>
+            <div className={styles.resDesc} style={{ color: "var(--text-muted)", marginTop: "0.5rem", fontSize: "0.75rem" }}>Pro Required</div>
           </div>
 
         </div>
@@ -161,8 +189,8 @@ export default function DashboardPage() {
 
       {/* Enhance Button */}
       <div style={{ textAlign: "right" }}>
-        <button 
-          className={styles.buttonPrimary} 
+        <button
+          className={styles.buttonPrimary}
           style={{ padding: "1rem 3rem", fontSize: "1.1rem" }}
           disabled={!file}
           onClick={startProcessing}
@@ -172,18 +200,18 @@ export default function DashboardPage() {
         </button>
       </div>
 
-      {/* Processing Overlay Simulation */}
+      {/* Processing Overlay */}
       {isProcessing && (
         <div className={styles.processingOverlay}>
           <div className={styles.processingCard}>
             <Wand2 size={48} className={styles.processingIcon} />
             <h2 className={styles.title} style={{ fontSize: "1.5rem" }}>AI Magic in Progress</h2>
             <p className={styles.subtitle}>Allocating GPUs and upscaling frames...</p>
-            
+
             <div className={styles.progressBarBg}>
               <div className={styles.progressBarFill} style={{ width: `${progress}%` }}></div>
             </div>
-            
+
             <div style={{ fontWeight: 600, color: "var(--foreground)" }}>
               {Math.min(progress, 100)}% Complete
             </div>
