@@ -7,26 +7,35 @@ import styles from "./page.module.css";
 export default function DashboardPage() {
   const [resolution, setResolution] = useState<"1080p" | "2K" | "4K">("1080p");
   const [file, setFile] = useState<File | null>(null);
+  const [videoURL, setVideoURL] = useState<string | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-    }
-  };
+  if (e.target.files && e.target.files[0]) {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+
+    const url = URL.createObjectURL(selectedFile);
+    setVideoURL(url);
+  }
+};
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
   };
 
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0]);
-    }
-  };
+  e.preventDefault();
+  if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    const selectedFile = e.dataTransfer.files[0];
+    setFile(selectedFile);
+
+    const url = URL.createObjectURL(selectedFile);
+    setVideoURL(url);
+  }
+};
 
   const browseFiles = () => {
     fileInputRef.current?.click();
@@ -57,6 +66,8 @@ export default function DashboardPage() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
+        <h2>Welcome to VideoBoost 🚀</h2> 
+
         <h1 className={styles.title}>Enhance Video</h1>
         <p className={styles.subtitle}>Upload your low-resolution video and let our AI transform it.</p>
       </div>
@@ -95,6 +106,20 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+      {videoURL && (
+       <div style={{ marginTop: "20px", textAlign: "center" }}>
+       <h3>Preview 🎬</h3>
+       <video
+      src={videoURL}
+      controls
+      style={{
+        width: "100%",
+        maxWidth: "500px",
+        borderRadius: "10px"
+      }}
+    />
+  </div>
+)}
 
       {/* Target Resolution Settings */}
       <div className={styles.settingsCard}>

@@ -1,59 +1,86 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Play } from "lucide-react";
 import styles from "../login/page.module.css";
 
 export default function RegisterPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    if (error) {
+      alert("Signup failed ❌: " + error.message);
+    } else {
+      alert("Account created ✅");
+      router.push("/login");
+    }
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.glowBackground}></div>
-      
+
       <div className={styles.card}>
         <Link href="/" className={styles.logo}>
           <Play size={24} color="#7c3aed" />
           VideoBoost AI
         </Link>
-        
+
         <h1 className={styles.title}>Create an account</h1>
         <p className={styles.subtitle}>Start transforming your videos with AI.</p>
-        
-        <form>
+
+        <form onSubmit={handleRegister}>
           <div className={styles.formGroup}>
             <label className={styles.label}>Full Name</label>
-            <input 
-              type="text" 
-              className={styles.input} 
-              placeholder="John Doe" 
-              required 
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="John Doe"
+              required
             />
           </div>
 
           <div className={styles.formGroup}>
             <label className={styles.label}>Email address</label>
-            <input 
-              type="email" 
-              className={styles.input} 
-              placeholder="you@example.com" 
-              required 
+            <input
+              type="email"
+              className={styles.input}
+              placeholder="you@example.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          
+
           <div className={styles.formGroup}>
             <label className={styles.label}>Password</label>
-            <input 
-              type="password" 
-              className={styles.input} 
-              placeholder="••••••••" 
-              required 
+            <input
+              type="password"
+              className={styles.input}
+              placeholder="••••••••"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          
+
           <button type="submit" className={styles.buttonPrimary} style={{ marginTop: "1rem" }}>
             Sign up for free
           </button>
         </form>
-        
+
         <div className={styles.divider}>or continue with</div>
-        
+
         <button type="button" className={styles.buttonGoogle}>
           <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -64,9 +91,10 @@ export default function RegisterPage() {
           </svg>
           Google
         </button>
-        
+
         <div className={styles.footer}>
-          Already have an account? <Link href="/login" className={styles.footerLink}>Log in</Link>
+          Already have an account?{" "}
+          <Link href="/login" className={styles.footerLink}>Log in</Link>
         </div>
       </div>
     </div>
