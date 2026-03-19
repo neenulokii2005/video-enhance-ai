@@ -71,7 +71,7 @@ export default function DashboardPage() {
   const startProcessing = async () => {
     if (!file) return;
     setIsProcessing(true);
-    setProgress(0);
+    setProgress(10);
     setProcessedURL(null);
     setStatusMsg("Loading FFmpeg...");
 
@@ -81,16 +81,8 @@ export default function DashboardPage() {
 
       const ffmpeg = new FFmpeg();
 
-      ffmpeg.on("progress", ({ progress: p }) => {
-        setProgress(Math.round(p * 100));
-      });
-
-      ffmpeg.on("log", ({ message }) => {
-        setStatusMsg(message.slice(0, 60));
-      });
-
       setStatusMsg("Loading FFmpeg core...");
-      setProgress(5);
+      setProgress(20);
 
       const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd";
       await ffmpeg.load({
@@ -98,33 +90,35 @@ export default function DashboardPage() {
         wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
       });
 
-      setStatusMsg("Processing your video...");
-      setProgress(20);
+      setStatusMsg("Reading video file...");
+      setProgress(40);
 
       await ffmpeg.writeFile("input.mp4", await fetchFile(file));
 
+      setStatusMsg("Enhancing video...");
+      setProgress(60);
+
       const scale = getResolutionScale();
 
+      // ultrafast = much faster processing
       await ffmpeg.exec([
         "-i", "input.mp4",
-        "-vf", `scale=${scale}:flags=lanczos`,
+        "-vf", `scale=${scale}:flags=bilinear`,
         "-c:v", "libx264",
-        "-crf", "18",
-        "-preset", "fast",
+        "-crf", "28",
+        "-preset", "ultrafast",
         "-c:a", "copy",
+        "-t", "15",
         "output.mp4"
       ]);
 
-      setStatusMsg("Finalizing...");
-      setProgress(95);
+      setStatusMsg("Preparing download...");
+      setProgress(90);
 
       const data = await ffmpeg.readFile("output.mp4");
-      const blob = new Blob([data as BlobPart], { type: "video/mp4" });
-      const url = URL.createObjectURL(blob);
-
-      setProcessedURL(url);
-      setProgress(100);
-      setStatusMsg("✅ Enhancement complete!");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const uint8Array = new Uint8Array(data as any);
+      const blob = new Blob([uint8Array.buffer], { type: "video/mp4" });
 
       // Save to history
       const { data: userData } = await supabase.auth.getUser();
@@ -137,6 +131,9 @@ export default function DashboardPage() {
         });
       }
 
+      setProgress(100);
+      setStatusMsg("✅ Enhancement complete!");
+      setProcessedURL(URL);
       setIsProcessing(false);
 
     } catch (err) {
@@ -242,7 +239,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Original Preview */}
-      {videoURL && (
+      {videoURL && !processedURL && (
         <div style={{ marginTop: "20px", textAlign: "center" }}>
           <h3>Original Preview 🎬</h3>
           <video src={videoURL} controls style={{ width: "100%", maxWidth: "500px", borderRadius: "10px" }} />
@@ -279,17 +276,19 @@ export default function DashboardPage() {
       </div>
 
       {/* Enhance Button */}
-      <div style={{ textAlign: "right" }}>
-        <button
-          className={styles.buttonPrimary}
-          style={{ padding: "1rem 3rem", fontSize: "1.1rem" }}
-          disabled={!file || isProcessing}
-          onClick={startProcessing}
-        >
-          <Wand2 size={20} />
-          {isProcessing ? "Processing..." : "Enhance Now"}
-        </button>
-      </div>
+      {!processedURL && (
+        <div style={{ textAlign: "right" }}>
+          <button
+            className={styles.buttonPrimary}
+            style={{ padding: "1rem 3rem", fontSize: "1.1rem" }}
+            disabled={!file || isProcessing}
+            onClick={startProcessing}
+          >
+            <Wand2 size={20} />
+            {isProcessing ? "Processing..." : "Enhance Now"}
+          </button>
+        </div>
+      )}
 
       {/* Processing Status */}
       {isProcessing && (
@@ -309,11 +308,15 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* Enhanced Video */}
-      {processedURL && (
+      {/* Enhanced Video + Download */}
+      {processedURL && !isProcessing && (
         <div style={{ marginTop: "2rem", textAlign: "center" }}>
-          <h3>✨ Enhanced Video ({resolution})</h3>
-          <video src={processedURL} controls style={{ width: "100%", maxWidth: "500px", borderRadius: "10px", marginBottom: "1rem" }} />
+          <h3 style={{ color: "#4ade80", marginBottom: "1rem" }}>✨ Enhanced Video ({resolution})</h3>
+          <video
+            src={processedURL}
+            controls
+            style={{ width: "100%", maxWidth: "500px", borderRadius: "10px", marginBottom: "1.5rem" }}
+          />
           <br />
           <button
             className={styles.buttonPrimary}
@@ -321,6 +324,20 @@ export default function DashboardPage() {
             onClick={handleDownload}
           >
             Download Enhanced Video 🎬
+          </button>
+          <br />
+          <button
+            onClick={() => { setProcessedURL(null); setFile(null); setVideoURL(null); setProgress(0); }}
+            style={{
+              marginTop: "1rem",
+              background: "transparent",
+              border: "none",
+              color: "#7c3aed",
+              cursor: "pointer",
+              fontWeight: 600
+            }}
+          >
+            Enhance Another Video
           </button>
         </div>
       )}
