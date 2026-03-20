@@ -122,7 +122,7 @@ export default function DashboardPage() {
       setProgress(90);
 
       const data = await ffmpeg.readFile("output.mp4");
-      const uint8Array = new Uint8Array(data);
+     const uint8Array = new Uint8Array(data as unknown as ArrayBuffer);
       const blob = new Blob([uint8Array], { type: "video/mp4" });
       const outputUrl = URL.createObjectURL(blob);
 
