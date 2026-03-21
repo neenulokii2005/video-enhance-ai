@@ -7,7 +7,6 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        // FFmpeg needs these headers - dashboard only
         source: "/dashboard/:path*",
         headers: [
           { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
