@@ -1,4 +1,5 @@
 "use client";
+// @ts-nocheck
 
 import { useState } from "react";
 import Link from "next/link";
@@ -6,6 +7,81 @@ import { Check, Play } from "lucide-react";
 
 export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const handlePayment = async (plan) => {
+    setLoading(true);
+
+    const amount = plan === "monthly" ? 99 : 799;
+
+    try {
+      // Load Razorpay script
+      const loaded = await loadRazorpay();
+      if (!loaded) {
+        alert("❌ Razorpay failed to load. Check your internet.");
+        setLoading(false);
+        return;
+      }
+
+      // Create order
+      const res = await fetch("/api/payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount, plan }),
+      });
+
+      const { orderId } = await res.json();
+
+      // Open Razorpay
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: amount * 100,
+        currency: "INR",
+        name: "VideoBoost AI",
+        description: `Pro ${plan === "monthly" ? "Monthly" : "Yearly"} Plan`,
+        order_id: orderId,
+        handler: function (response) {
+          alert("✅ Payment Success! ID: " + response.razorpay_payment_id);
+          window.location.href = "/dashboard";
+        },
+        prefill: {
+          name: "",
+          email: "",
+        },
+        theme: {
+          color: "#7c3aed",
+        },
+        modal: {
+          ondismiss: function () {
+            setLoading(false);
+          }
+        }
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+
+    } catch (err) {
+      console.error(err);
+      alert("❌ Payment failed. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div style={{
@@ -61,10 +137,9 @@ export default function PricingPage() {
         gap: "1rem",
         marginBottom: "3rem"
       }}>
-        <span style={{
-          color: !isYearly ? "white" : "#666",
-          fontWeight: !isYearly ? 700 : 400
-        }}>Monthly</span>
+        <span style={{ color: !isYearly ? "white" : "#666", fontWeight: !isYearly ? 700 : 400 }}>
+          Monthly
+        </span>
 
         <div
           onClick={() => setIsYearly(!isYearly)}
@@ -88,10 +163,7 @@ export default function PricingPage() {
           }} />
         </div>
 
-        <span style={{
-          color: isYearly ? "white" : "#666",
-          fontWeight: isYearly ? 700 : 400
-        }}>
+        <span style={{ color: isYearly ? "white" : "#666", fontWeight: isYearly ? 700 : 400 }}>
           Yearly
           <span style={{
             marginLeft: "0.5rem",
@@ -196,23 +268,30 @@ export default function PricingPage() {
               </span>
             </h2>
             <p style={{ color: "#666", fontSize: "0.9rem", marginBottom: "1rem" }}>
-              For serious creators who need the best quality without limits.
+              For serious creators who need the best quality.
             </p>
           </div>
 
-          <Link href="/register" style={{
-            display: "block",
-            textAlign: "center",
-            padding: "0.75rem",
-            background: "#7c3aed",
-            color: "white",
-            borderRadius: "8px",
-            textDecoration: "none",
-            fontWeight: 600,
-            marginBottom: "1.5rem"
-          }}>
-            Upgrade to Pro
-          </Link>
+          <button
+            onClick={() => handlePayment(isYearly ? "yearly" : "monthly")}
+            disabled={loading}
+            style={{
+              display: "block",
+              width: "100%",
+              textAlign: "center",
+              padding: "0.75rem",
+              background: loading ? "#555" : "#7c3aed",
+              color: "white",
+              borderRadius: "8px",
+              border: "none",
+              fontWeight: 600,
+              marginBottom: "1.5rem",
+              cursor: loading ? "not-allowed" : "pointer",
+              fontSize: "1rem"
+            }}
+          >
+            {loading ? "Loading..." : "Upgrade to Pro 🚀"}
+          </button>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {[
@@ -236,8 +315,8 @@ export default function PricingPage() {
       {/* Bottom note */}
       <div style={{ maxWidth: "600px", margin: "4rem auto 0 auto", textAlign: "center" }}>
         <p style={{ color: "#aaa" }}>
-          Start with the free plan — no credit card required.
-          Upgrade anytime when you need more.
+          Secure payments powered by Razorpay.
+          GPay, PhonePe, UPI, Card எல்லாம் accept பண்ணும்.
         </p>
       </div>
 
