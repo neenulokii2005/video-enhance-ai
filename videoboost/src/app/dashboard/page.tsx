@@ -102,17 +102,17 @@ export default function DashboardPage() {
       const scale = getResolutionScale();
 
       await ffmpeg.exec([
-        "-i", "input.mp4",
-        "-vf", `scale=${scale}`,
-        "-c:v", "libx264",
-        "-crf", "30",
-        "-preset", "ultrafast",
-        "-tune", "fastdecode",
-        "-c:a", "copy",
-        "-t", "15",
-        "-movflags", "+faststart",
-        "output.mp4"
-      ]);
+  "-i", "input.mp4",
+ "-vf", `scale=${scale}`,
+  "-c:v", "libx264",
+  "-crf", "23",
+  "-preset", "ultrafast",
+  "-tune", "film",
+  "-c:a", "copy",
+  "-t", "15",
+  "-movflags", "+faststart",
+  "output.mp4"
+]);
 
       setStatusMsg("Preparing...");
       setProgress(90);
