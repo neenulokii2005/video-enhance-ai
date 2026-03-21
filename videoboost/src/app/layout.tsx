@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   keywords: "AI video enhancer, video upscaling, 4K upscale, video quality improve, free video enhancer, VideoBoost AI",
   authors: [{ name: "VideoBoost AI" }],
   metadataBase: new URL("https://video-enhance-ai.vercel.app"),
+  verification: {
+    google: "ARxorM2jEuSTcZEsLZyTI7tibjZhW1mV_ss8_e5WrC0",
+  },
   openGraph: {
     title: "VideoBoost AI — Free AI Video Enhancer",
     description: "Enhance your videos with AI. Upscale to 4K for free.",
