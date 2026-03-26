@@ -1,36 +1,15 @@
-import { MetadataRoute } from "next";
-
-export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      url: "https://video-enhance-ai.vercel.app",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-    {
-      url: "https://video-enhance-ai.vercel.app/login",
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: "https://video-enhance-ai.vercel.app/register",
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
-      url: "https://video-enhance-ai.vercel.app/pricing",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.9,
-    },
-    {
-      url: "https://video-enhance-ai.vercel.app/dashboard",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-  ];
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://video-enhance-ai.vercel.app/</loc>
+  </url>
+  <url>
+    <loc>https://video-enhance-ai.vercel.app/login</loc>
+  </url>
+  <url>
+    <loc>https://video-enhance-ai.vercel.app/register</loc>
+  </url>
+  <url>
+    <loc>https://video-enhance-ai.vercel.app/pricing</loc>
+  </url>
+</urlset>
