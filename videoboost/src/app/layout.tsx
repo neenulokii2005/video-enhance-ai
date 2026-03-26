@@ -13,38 +13,52 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VideoBoost AI — Free AI Video Enhancer | 4K Upscaling",
-  description: "Enhance your videos with AI. Upscale to 4K, improve quality, reduce noise. Free to use. No watermark. Fast processing.",
-  keywords: "AI video enhancer, video upscaling, 4K upscale, video quality improve, free video enhancer, VideoBoost AI",
+  title: "VideoBoost AI — Enhance Videos to 4K Ultra HD",
+  description: "Transform your low-resolution videos into stunning 1080p, 2K, and 4K quality using AI. Fast, secure, and professional video enhancement online.",
+  keywords: [
+    "AI video enhancer",
+    "video upscale online",
+    "480p to 4K",
+    "video quality improve",
+    "AI video upscaling",
+    "enhance video online free",
+    "1080p 2K 4K video",
+    "video boost AI"
+  ],
   authors: [{ name: "VideoBoost AI" }],
-  metadataBase: new URL("https://video-enhance-ai.vercel.app"),
-  verification: {
-    google: "ARxorM2jEuSTcZEsLZyTI7tibjZhW1mV_ss8_e5WrC0",
-  },
-  openGraph: {
-    title: "VideoBoost AI — Free AI Video Enhancer",
-    description: "Enhance your videos with AI. Upscale to 4K for free.",
-    url: "https://video-enhance-ai.vercel.app",
-    siteName: "VideoBoost AI",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "VideoBoost AI Preview",
-      },
-    ],
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "VideoBoost AI — Free AI Video Enhancer",
-    description: "Enhance your videos with AI. Upscale to 4K for free.",
-    images: ["/og-image.png"],
-  },
+  creator: "VideoBoost AI",
+  publisher: "VideoBoost AI",
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  openGraph: {
+    type: "website",
+    url: "https://video-enhance-ai.vercel.app",
+    title: "VideoBoost AI — Enhance Videos to 4K Ultra HD",
+    description: "Transform your low-resolution videos into stunning 1080p, 2K, and 4K quality using AI. Fast, free, and professional.",
+    siteName: "VideoBoost AI",
+    images: [
+      {
+        url: "https://video-enhance-ai.vercel.app/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "VideoBoost AI — Video Enhancer",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "VideoBoost AI — Enhance Videos to 4K Ultra HD",
+    description: "Transform your low-resolution videos into stunning 4K quality using AI. Free to try!",
+    images: ["https://video-enhance-ai.vercel.app/og-image.png"],
+  },
+  alternates: {
+    canonical: "https://video-enhance-ai.vercel.app",
   },
 };
 
@@ -55,6 +69,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
       </body>
