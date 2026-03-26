@@ -9,22 +9,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
-      url: "https://video-enhance-ai.vercel.app/pricing",
+      url: "https://video-enhance-ai.vercel.app/login",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: "https://video-enhance-ai.vercel.app/login",
-      lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.5,
-    },
-    {
       url: "https://video-enhance-ai.vercel.app/register",
       lastModified: new Date(),
-      changeFrequency: "yearly",
-      priority: 0.5,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://video-enhance-ai.vercel.app/pricing",
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: "https://video-enhance-ai.vercel.app/dashboard",
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.7,
     },
   ];
 }
